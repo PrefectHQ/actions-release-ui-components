@@ -2,7 +2,10 @@
 name: actions-release-ui-components
 description: |
   Releases the UI Components package to NPM and GitHub.
-
+inputs:
+  NPM_TOKEN:
+    description: "The NPM token to use for publishing the package."
+    required: true
 runs:
   using: composite
   steps:
