@@ -6,6 +6,9 @@ inputs:
   NPM_TOKEN:
     description: "The NPM token to use for publishing the package."
     required: true
+  GITHUB_TOKEN:
+    description: "The Github token to use for creating the release."
+    required: true
 runs:
   using: composite
   steps:
@@ -32,7 +35,7 @@ runs:
 
     - name: Create Release
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
         gh release create "$tag" \
