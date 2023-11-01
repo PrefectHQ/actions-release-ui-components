@@ -6,38 +6,34 @@ description: |
 runs:
   using: composite
   steps:
-    # - name: Setup Node
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version-file: ".nvmrc"
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: ".nvmrc"
 
-    # - name: Install Dependencies
-    #   run: npm ci
-    #   shell: bash
-
-    # - name: Build Package
-    #   run: npm run build
-    #   shell: bash
-    
-    - name: Test Passing of secrets
-      run: |
-        echo "The token is ${{ env.NPM_RELEASE_TOKEN }}"
+    - name: Install Dependencies
+      run: npm ci
       shell: bash
-    # - name: Publish Package to NPM
-    #   id: publish
-    #   uses: JS-DevTools/npm-publish@v2
-    #   with:
-    #     token: ${{ secrets.NPM_TOKEN }} # Can be overritten
-    #     strategy: upgrade
-    #     access: public
 
-    # - name: Create Release
-    #   env:
-    #     GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-    #     tag: ${{ steps.publish.outputs.version }}
-    #   run: |
-    #     gh release create "$tag" \
-    #         --repo="$GITHUB_REPOSITORY" \
-    #         --title="Release ${tag#v}" \
-    #         --generate-notes
-    #   shell: bash
+    - name: Build Package
+      run: npm run build
+      shell: bash
+
+    - name: Publish Package to NPM
+      id: publish
+      uses: JS-DevTools/npm-publish@v2
+      with:
+        token: ${{ env.NPM_RELEASE_TOKEN }}
+        strategy: upgrade
+        access: public
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        tag: ${{ steps.publish.outputs.version }}
+      run: |
+        gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="Release ${tag#v}" \
+            --generate-notes
+      shell: bash
