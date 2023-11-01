@@ -23,7 +23,7 @@ runs:
       id: publish
       uses: JS-DevTools/npm-publish@v2
       with:
-        token: ${{ env.NPM_RELEASE_TOKEN }}
+        token: ${{ inputs.NPM_TOKEN }}
         strategy: upgrade
         access: public
 

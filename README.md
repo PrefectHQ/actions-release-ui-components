@@ -24,6 +24,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: prefecthq/actions-release-ui-components@main
-        env:
-          NPM_RELEASE_TOKEN: ${{ secrets.NPM_TOKEN_SUPER_SECRET }}
+        with:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN_SUPER_SECRET }}
 ```
