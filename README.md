@@ -25,5 +25,5 @@ jobs:
 
       - uses: prefecthq/actions-release-ui-components@main
         env:
-          NPM_RELEASE_TOKEN: ${{ secrets.PREFECT_UI_COMPONENTS_NPM_TOKEN }}
+          NPM_RELEASE_TOKEN: ${{ secrets.NPM_TOKEN_SUPER_SECRET }}
 ```
