@@ -15,6 +15,10 @@ inputs:
   PREFECT_OSS_ACTIONS_RW_TOKEN:
     description: "The Github token to use for triggering the Prefect OSS NPM package update."
     required: true
+  UPDATE_DOWNSTREAM_REPOS:
+    description: "Whether to trigger the Nebula UI and Prefect OSS NPM package updates."
+    required: false
+    default: "true"
 runs:
   using: composite
   steps:
@@ -51,6 +55,7 @@ runs:
       shell: bash
 
     - name: Trigger Nebula UI NPM Package Update
+      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
       env:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
       run: |
@@ -62,6 +67,7 @@ runs:
       shell: bash
 
     - name: Trigger Prefect OSS NPM Package Update
+      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
       env:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
       run: |
