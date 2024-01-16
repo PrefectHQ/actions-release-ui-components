@@ -43,3 +43,21 @@ runs:
             --title="Release ${tag#v}" \
             --generate-notes
       shell: bash
+
+    - name: Trigger Nebula UI NPM Package Update
+      run: |
+        gh workflow run npm_update_latest_prefect.yaml \
+            --repo=nebula-ui \
+            --ref=main \
+            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_version="$tag"
+      shell: bash
+
+    - name: Trigger Prefect OSS NPM Package Update
+      run: |
+        gh workflow run npm_update_latest_prefect.yaml \
+            --repo=prefect \
+            --ref=main \
+            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_version="$tag"
+      shell: bash
