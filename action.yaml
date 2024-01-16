@@ -11,10 +11,10 @@ inputs:
     required: true
   NEBULA_UI_ACTIONS_RW_TOKEN:
     description: "The Github token to use for triggering the Nebula UI NPM package update."
-    required: true
+    required: false
   PREFECT_OSS_ACTIONS_RW_TOKEN:
     description: "The Github token to use for triggering the Prefect OSS NPM package update."
-    required: true
+    required: false
   UPDATE_DOWNSTREAM_REPOS:
     description: "Whether to trigger the Nebula UI and Prefect OSS NPM package updates."
     required: false
