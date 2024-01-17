@@ -60,7 +60,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
       run: |
         gh workflow run npm_update_latest_prefect.yaml \
-            --repo=nebula-ui \
+            --repo=prefecthq/nebula-ui \
             --ref=main \
             -f package_name="$GITHUB_REPOSITORY" \
             -f package_version="$tag"
@@ -72,7 +72,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
       run: |
         gh workflow run npm_update_latest_prefect.yaml \
-            --repo=prefect \
+            --repo=prefecthq/prefect \
             --ref=main \
             -f package_name="$GITHUB_REPOSITORY" \
             -f package_version="$tag"
