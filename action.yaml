@@ -4,11 +4,21 @@ description: |
   Releases the UI Components package to NPM and GitHub.
 inputs:
   NPM_TOKEN:
-    description: "The NPM token to use for publishing the package."
+    description: The NPM token to use for publishing the package.
     required: true
   GITHUB_TOKEN:
-    description: "The Github token to use for creating the release."
+    description: The Github token to use for creating the release.
     required: true
+  NEBULA_UI_ACTIONS_RW_TOKEN:
+    description: The Github token to use for triggering the Nebula UI NPM package update.
+    required: false
+  PREFECT_OSS_ACTIONS_RW_TOKEN:
+    description: The Github token to use for triggering the Prefect OSS NPM package update.
+    required: false
+  UPDATE_DOWNSTREAM_REPOS:
+    description: Whether to trigger the Nebula UI and Prefect OSS NPM package updates.
+    required: false
+    default: "true"
 runs:
   using: composite
   steps:
@@ -42,4 +52,28 @@ runs:
             --repo="$GITHUB_REPOSITORY" \
             --title="Release ${tag#v}" \
             --generate-notes
+      shell: bash
+
+    - name: Trigger Nebula UI NPM Package Update
+      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
+      run: |
+        gh workflow run npm_update_latest_prefect.yaml \
+            --repo=nebula-ui \
+            --ref=main \
+            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_version="$tag"
+      shell: bash
+
+    - name: Trigger Prefect OSS NPM Package Update
+      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
+      run: |
+        gh workflow run npm_update_latest_prefect.yaml \
+            --repo=prefect \
+            --ref=main \
+            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_version="$tag"
       shell: bash
