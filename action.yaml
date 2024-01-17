@@ -58,6 +58,7 @@ runs:
       if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
       env:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
+        tag: ${{ steps.publish.outputs.version }}
       run: |
         gh workflow run npm_update_latest_prefect.yaml \
             --repo=prefecthq/nebula-ui \
@@ -70,6 +71,7 @@ runs:
       if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
       env:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
+        tag: ${{ steps.publish.outputs.version }}
       run: |
         gh workflow run npm_update_latest_prefect.yaml \
             --repo=prefecthq/prefect \
