@@ -4,19 +4,19 @@ description: |
   Releases the UI Components package to NPM and GitHub.
 inputs:
   NPM_TOKEN:
-    description: "The NPM token to use for publishing the package."
+    description: The NPM token to use for publishing the package.
     required: true
   GITHUB_TOKEN:
-    description: "The Github token to use for creating the release."
+    description: The Github token to use for creating the release.
     required: true
   NEBULA_UI_ACTIONS_RW_TOKEN:
-    description: "The Github token to use for triggering the Nebula UI NPM package update."
+    description: The Github token to use for triggering the Nebula UI NPM package update.
     required: false
   PREFECT_OSS_ACTIONS_RW_TOKEN:
-    description: "The Github token to use for triggering the Prefect OSS NPM package update."
+    description: The Github token to use for triggering the Prefect OSS NPM package update.
     required: false
   UPDATE_DOWNSTREAM_REPOS:
-    description: "Whether to trigger the Nebula UI and Prefect OSS NPM package updates."
+    description: Whether to trigger the Nebula UI and Prefect OSS NPM package updates.
     required: false
     default: "true"
 runs:
