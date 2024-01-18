@@ -44,6 +44,7 @@ runs:
         access: public
 
     - name: Create Release
+      if: ${{ steps.publish.outputs.type }}
       env:
         GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
@@ -55,7 +56,8 @@ runs:
       shell: bash
 
     - name: Trigger Nebula UI NPM Package Update
-      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+      if: |
+        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
       env:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
@@ -68,7 +70,8 @@ runs:
       shell: bash
 
     - name: Trigger Prefect OSS NPM Package Update
-      if: ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+      if: |
+        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
       env:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
