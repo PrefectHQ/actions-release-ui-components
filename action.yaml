@@ -65,7 +65,7 @@ runs:
         gh workflow run npm_update_latest_prefect.yaml \
             --repo=prefecthq/nebula-ui \
             --ref=main \
-            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
             -f package_version="$tag"
       shell: bash
 
@@ -79,6 +79,6 @@ runs:
         gh workflow run npm_update_latest_prefect.yaml \
             --repo=prefecthq/prefect \
             --ref=main \
-            -f package_name="$GITHUB_REPOSITORY" \
+            -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
             -f package_version="$tag"
       shell: bash
