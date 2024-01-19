@@ -35,26 +35,6 @@ runs:
       run: npm run build
       shell: bash
 
-    - name: Publish Package to NPM
-      id: publish
-      uses: JS-DevTools/npm-publish@v2
-      with:
-        token: ${{ inputs.NPM_TOKEN }}
-        strategy: upgrade
-        access: public
-
-    - name: Create Release
-      if: ${{ steps.publish.outputs.type }}
-      env:
-        GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        tag: ${{ steps.publish.outputs.version }}
-      run: |
-        gh release create "$tag" \
-            --repo="$GITHUB_REPOSITORY" \
-            --title="Release ${tag#v}" \
-            --generate-notes
-      shell: bash
-
     - name: Trigger Nebula UI NPM Package Update
       if: |
         ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
@@ -69,16 +49,50 @@ runs:
             -f package_version="$tag"
       shell: bash
 
-    - name: Trigger Prefect OSS NPM Package Update
-      if: |
-        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
-      env:
-        GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
-        tag: ${{ steps.publish.outputs.version }}
-      run: |
-        gh workflow run npm_update_latest_prefect.yaml \
-            --repo=prefecthq/prefect \
-            --ref=main \
-            -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
-            -f package_version="$tag"
-      shell: bash
+    # - name: Publish Package to NPM
+    #   id: publish
+    #   uses: JS-DevTools/npm-publish@v2
+    #   with:
+    #     token: ${{ inputs.NPM_TOKEN }}
+    #     strategy: upgrade
+    #     access: public
+
+    # - name: Create Release
+    #   if: ${{ steps.publish.outputs.type }}
+    #   env:
+    #     GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+    #     tag: ${{ steps.publish.outputs.version }}
+    #   run: |
+    #     gh release create "$tag" \
+    #         --repo="$GITHUB_REPOSITORY" \
+    #         --title="Release ${tag#v}" \
+    #         --generate-notes
+    #   shell: bash
+
+    # - name: Trigger Nebula UI NPM Package Update
+    #   if: |
+    #     ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
+    #     tag: ${{ steps.publish.outputs.version }}
+    #   run: |
+    #     gh workflow run npm_update_latest_prefect.yaml \
+    #         --repo=prefecthq/nebula-ui \
+    #         --ref=main \
+    #         -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
+    #         -f package_version="$tag"
+    #   shell: bash
+
+    # - name: Trigger Prefect OSS NPM Package Update
+    #   if: |
+    #     ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
+    #     tag: ${{ steps.publish.outputs.version }}
+    #   run: |
+    #     gh workflow run npm_update_latest_prefect.yaml \
+    #         --repo=prefecthq/prefect \
+    #         --ref=main \
+    #         -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
+    #         -f package_version="$tag"
+    #   shell: bash
