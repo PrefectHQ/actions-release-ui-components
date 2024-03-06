@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Test
       run: |
-        if {{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
         then
           echo "Hello I have been triggered because this has been set to true"
         fi
