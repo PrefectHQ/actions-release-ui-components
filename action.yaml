@@ -56,13 +56,11 @@ runs:
       shell: bash
 
     - name: Trigger Nebula UI NPM Package Update
-      if: |
-        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
       env:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/nebula-ui \
               --ref=main \
@@ -72,15 +70,15 @@ runs:
       shell: bash
 
     - name: Trigger Prefect OSS NPM Package Update
-      if: |
-        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}
       env:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        gh workflow run npm_update_latest_prefect.yaml \
-            --repo=prefecthq/prefect \
-            --ref=main \
-            -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
-            -f package_version="$tag"
+        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
+          gh workflow run npm_update_latest_prefect.yaml \
+              --repo=prefecthq/prefect \
+              --ref=main \
+              -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
+              -f package_version="$tag"
+        fi
       shell: bash
