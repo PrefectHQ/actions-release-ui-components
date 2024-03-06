@@ -15,7 +15,5 @@ runs:
         if {{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
         then
           echo "Hello I have been triggered because this has been set to true"
-        else
-          echo "Hello I have not been triggered because this has been set to false"
         fi
       shell: bash
