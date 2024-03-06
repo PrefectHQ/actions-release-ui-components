@@ -11,15 +11,11 @@ runs:
   using: composite
   steps:
     - name: Test
-      if: |
-        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
       run: |
-        echo "Hello I have been triggered because this has been set to true"
-      shell: bash
-
-    - name: Another Test
-      if: |
-        ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'false' }}
-      run: |
-        echo "Hello I have not been triggered because this has been set to false"
+        if {{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+        then
+          echo "Hello I have been triggered because this has been set to true"
+        else
+          echo "Hello I have not been triggered because this has been set to false"
+        fi
       shell: bash
