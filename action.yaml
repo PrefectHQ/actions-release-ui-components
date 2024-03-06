@@ -16,8 +16,7 @@ runs:
   steps:
     - name: Test
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ inputs.ANOTHER_INPUT == 'true' }};
-        then
+        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ inputs.ANOTHER_INPUT == 'true' }}; then
           echo "Hello I have been triggered because this has been set to true"
         fi
       shell: bash
