@@ -7,12 +7,16 @@ inputs:
     description: Whether to trigger the Nebula UI and Prefect OSS NPM package updates.
     required: false
     default: "true"
+  ANOTHER_INPUT:
+    description: Another input
+    required: false
+    default: "false"
 runs:
   using: composite
   steps:
     - name: Test
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }}
+        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ inputs.ANOTHER_INPUT == 'true' }};
         then
           echo "Hello I have been triggered because this has been set to true"
         fi
