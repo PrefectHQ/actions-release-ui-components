@@ -15,14 +15,18 @@ inputs:
   PREFECT_OSS_ACTIONS_RW_TOKEN:
     description: The Github token to use for triggering the Prefect OSS NPM package update.
     required: false
-  UPDATE_DOWNSTREAM_NEBULA_UI_REPOS:
+  UPDATE_DOWNSTREAM_NEBULA_UI_REPO:
     description: Whether to trigger Nebula UI NPM package updates.
     required: false
     default: "true"
-  UPDATE_DOWNSTREAM_OSS_REPOS:
+  UPDATE_DOWNSTREAM_OSS_REPO:
     description: Whether to trigger Prefect OSS NPM package updates.
     required: false
     default: "true"
+  UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO:
+    description: Whether to trigger Prefect UI Library NPM package updates.
+    required: false
+    default: "false"
 runs:
   using: composite
   steps:
@@ -64,7 +68,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/nebula-ui \
               --ref=main \
@@ -78,9 +82,22 @@ runs:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/prefect \
+              --ref=main \
+              -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
+              -f package_version="$tag"
+        fi
+      shell: bash
+    - name: Trigger Prefect OSS NPM Package Update
+      env:
+        GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
+        tag: ${{ steps.publish.outputs.version }}
+      run: |
+        if ${{ inputs.UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
+          gh workflow run npm_update_latest_prefect.yaml \
+              --repo=prefecthq/prefect-ui-library \
               --ref=main \
               -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
               -f package_version="$tag"
