@@ -15,8 +15,12 @@ inputs:
   PREFECT_OSS_ACTIONS_RW_TOKEN:
     description: The Github token to use for triggering the Prefect OSS NPM package update.
     required: false
-  UPDATE_DOWNSTREAM_REPOS:
-    description: Whether to trigger the Nebula UI and Prefect OSS NPM package updates.
+  UPDATE_DOWNSTREAM_NEBULA_UI_REPOS:
+    description: Whether to trigger Nebula UI NPM package updates.
+    required: false
+    default: "true"
+  UPDATE_DOWNSTREAM_OSS_REPOS:
+    description: Whether to trigger Prefect OSS NPM package updates.
     required: false
     default: "true"
 runs:
@@ -60,7 +64,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/nebula-ui \
               --ref=main \
@@ -74,7 +78,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPOS == 'true' }} && ${{ steps.publish.outputs.type }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/prefect \
               --ref=main \
