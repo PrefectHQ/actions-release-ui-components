@@ -72,7 +72,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPO == 'true' }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/nebula-ui \
               --ref=main \
@@ -87,7 +87,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPO == 'true' }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/prefect \
               --ref=main \
@@ -102,7 +102,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.PREFECT_UI_LIBRARY_ACTIONS_RW_TOKEN }}
         tag: ${{ steps.publish.outputs.version }}
       run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO == 'true' }} && ${{ steps.publish.outputs.type }}; then
+        if ${{ inputs.UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO == 'true' }}; then
           gh workflow run npm_update_latest_prefect.yaml \
               --repo=prefecthq/prefect-ui-library \
               --ref=main \
