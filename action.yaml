@@ -13,6 +13,13 @@ inputs:
     description: Skip the build step.
     required: false
     default: 'false'
+outputs:
+  version:
+    value: ${{ steps.publish.outputs.version }}
+    description: The version of the package that was published.
+  type: 
+    value: ${{ steps.publish.outputs.type }}
+    description: The type of the package that was published.
 runs:
   using: composite
   steps:
