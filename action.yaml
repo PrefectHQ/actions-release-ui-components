@@ -9,6 +9,10 @@ inputs:
   GITHUB_TOKEN:
     description: The Github token to use for creating the release.
     required: true
+  SKIP_BUILD:
+    description: Skip the build step.
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -22,6 +26,7 @@ runs:
       shell: bash
 
     - name: Build Package
+      if: ${{ inputs.SKIP_BUILD == 'false' }}
       run: npm run build
       shell: bash
 
