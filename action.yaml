@@ -11,7 +11,7 @@ inputs:
     required: true
   SKIP_BUILD:
     description: Skip the build step.
-    required: false
+    required: true
     default: 'false'
 outputs:
   version:

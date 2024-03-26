@@ -11,6 +11,7 @@ Releases UI components using shared release manifest
 |-------|------------|----------|
 | GITHUB_TOKEN | Secret/Env Var containing the Github token used for releases. (It is the default git token) | true |
 | NPM_RELEASE_TOKEN | Secret/Env Var containing the NPM token used for releases. | true |
+| SKIP_BUILD | Bool for whether or not to skip the build step (req by eslint-config). | false |
 
 ## Usage
 ```yaml
