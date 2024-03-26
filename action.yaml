@@ -9,27 +9,17 @@ inputs:
   GITHUB_TOKEN:
     description: The Github token to use for creating the release.
     required: true
-  NEBULA_UI_ACTIONS_RW_TOKEN:
-    description: The Github token to use for triggering the Nebula UI NPM package update.
-    required: false
-  PREFECT_OSS_ACTIONS_RW_TOKEN:
-    description: The Github token to use for triggering the Prefect OSS NPM package update.
-    required: false
-  PREFECT_UI_LIBRARY_ACTIONS_RW_TOKEN:
-    description: The Github token to use for triggering the Prefect UI Library NPM package update.
-    required: false
-  UPDATE_DOWNSTREAM_NEBULA_UI_REPO:
-    description: Whether to trigger Nebula UI NPM package updates.
-    required: false
-    default: "true"
-  UPDATE_DOWNSTREAM_OSS_REPO:
-    description: Whether to trigger Prefect OSS NPM package updates.
-    required: false
-    default: "true"
-  UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO:
-    description: Whether to trigger Prefect UI Library NPM package updates.
-    required: false
-    default: "false"
+  SKIP_BUILD:
+    description: Skip the build step.
+    required: true
+    default: 'false'
+outputs:
+  version:
+    value: ${{ steps.publish.outputs.version }}
+    description: The version of the package that was published.
+  type: 
+    value: ${{ steps.publish.outputs.type }}
+    description: The type of the package that was published.
 runs:
   using: composite
   steps:
@@ -43,6 +33,7 @@ runs:
       shell: bash
 
     - name: Build Package
+      if: ${{ inputs.SKIP_BUILD == 'false' }}
       run: npm run build
       shell: bash
 
@@ -64,49 +55,4 @@ runs:
             --repo="$GITHUB_REPOSITORY" \
             --title="Release ${tag#v}" \
             --generate-notes
-      shell: bash
-
-    - name: Trigger Nebula UI NPM Package Update
-      if: ${{ steps.publish.outputs.type }}
-      env:
-        GITHUB_TOKEN: ${{ inputs.NEBULA_UI_ACTIONS_RW_TOKEN }}
-        tag: ${{ steps.publish.outputs.version }}
-      run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_NEBULA_UI_REPO == 'true' }}; then
-          gh workflow run npm_update_latest_prefect.yaml \
-              --repo=prefecthq/nebula-ui \
-              --ref=main \
-              -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
-              -f package_version="$tag"
-        fi
-      shell: bash
-
-    - name: Trigger Prefect OSS NPM Package Update
-      if: ${{ steps.publish.outputs.type }}
-      env:
-        GITHUB_TOKEN: ${{ inputs.PREFECT_OSS_ACTIONS_RW_TOKEN }}
-        tag: ${{ steps.publish.outputs.version }}
-      run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_OSS_REPO == 'true' }}; then
-          gh workflow run npm_update_latest_prefect.yaml \
-              --repo=prefecthq/prefect \
-              --ref=main \
-              -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
-              -f package_version="$tag"
-        fi
-      shell: bash
-
-    - name: Trigger Prefect-UI-Library NPM Package Update
-      if: ${{ steps.publish.outputs.type }}
-      env:
-        GITHUB_TOKEN: ${{ inputs.PREFECT_UI_LIBRARY_ACTIONS_RW_TOKEN }}
-        tag: ${{ steps.publish.outputs.version }}
-      run: |
-        if ${{ inputs.UPDATE_DOWNSTREAM_PREFECT_UI_LIBRARY_REPO == 'true' }}; then
-          gh workflow run npm_update_latest_prefect.yaml \
-              --repo=prefecthq/prefect-ui-library \
-              --ref=main \
-              -f package_name="$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" \
-              -f package_version="$tag"
-        fi
       shell: bash
