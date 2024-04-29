@@ -27,12 +27,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Configure git user
-      run: |
-        git config user.name "$GITHUB_ACTOR"
-        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      shell: bash
-
     - name: Setup Node
       id: setup_node
       uses: prefecthq/actions-setup-nodejs@main
@@ -58,6 +52,10 @@ runs:
     - uses: actions/checkout@v4
       with:
         ref: main
+      shell: bash
+
+    - name: Install Dependencies
+      run: npm ci
       shell: bash
 
     - name: Build Package

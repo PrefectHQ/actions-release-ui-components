@@ -32,6 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+    - name: Configure git user
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - uses: prefecthq/actions-release-ui-components@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
