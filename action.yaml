@@ -10,7 +10,7 @@ inputs:
     description: The Github token to use for creating the release.
     required: true
   RELEASE_TYPE:
-    description: The type of release to perform.
+    description: The type of release to perform - value should be patch, minor, or major
     required: true
     default: 'patch'
   SKIP_BUILD:
