@@ -30,7 +30,6 @@ runs:
     - name: Setup Node
       id: setup_node
       uses: prefecthq/actions-setup-nodejs@main
-      shell: bash
 
     - name: Bump Package Version
       id: bump_version
@@ -52,7 +51,6 @@ runs:
     - uses: actions/checkout@v4
       with:
         ref: main
-      shell: bash
 
     - name: Install Dependencies
       run: npm ci
