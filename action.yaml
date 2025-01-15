@@ -43,7 +43,9 @@ runs:
         echo "RELEASE_VERSION=$(cat package.json | jq .version | tr -d '"')" >> $GITHUB_ENV
       shell: bash
 
+    # If the working directory is the root, we need npm will create the commits and tag for us
     - name: Bump Version and Create Release
+      if: ${{ inputs.WORKING_DIR == '.' }}
       env:
         GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
       working-directory: ${{ inputs.WORKING_DIR }}
@@ -51,6 +53,27 @@ runs:
         git checkout -b $RELEASE_VERSION
         git push --set-upstream origin $RELEASE_VERSION
         gh pr create --base main -f
+        gh pr merge --squash --admin --delete-branch
+      shell: bash
+    
+    # If the working directory is not the root, we need to manually create the commits and tag
+    - name: Bump Version and Create Release
+      if: ${{ inputs.WORKING_DIR != '.' }}
+      env:
+        GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      working-directory: ${{ inputs.WORKING_DIR }}
+      run: |
+        git checkout -b $RELEASE_VERSION
+        git add *
+        git commit -m "$RELEASE_VERSION"
+        git push --set-upstream origin $RELEASE_VERSION
+        gh pr create --base main -f
+
+        # Create and push a Tag of the new version
+        git tag $RELEASE_VERSION
+        git push origin tags/$RELEASE_VERSION
+
+        # Once tag is pushed, merge the PR
         gh pr merge --squash --admin --delete-branch
       shell: bash
 
