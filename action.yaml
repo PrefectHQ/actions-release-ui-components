@@ -64,8 +64,7 @@ runs:
       working-directory: ${{ inputs.WORKING_DIR }}
       run: |
         git checkout -b $RELEASE_VERSION
-        git add *
-        git commit -m "$RELEASE_VERSION"
+        git commit -am "$RELEASE_VERSION"
         git push --set-upstream origin $RELEASE_VERSION
         gh pr create --base main -f
 
