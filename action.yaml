@@ -17,6 +17,10 @@ inputs:
     description: Skip the build step.
     required: true
     default: 'false'
+  WORKING_DIR:
+    description: The directory containing the package to build and release. Defaults to repository root.
+    required: false
+    default: '.'
 outputs:
   version:
     value: ${{ steps.publish.outputs.version }}
@@ -33,6 +37,7 @@ runs:
 
     - name: Bump Package Version
       id: bump_version
+      working-directory: ${{ inputs.WORKING_DIR }}
       run: | 
         npm version ${{ inputs.RELEASE_TYPE }}
         echo "RELEASE_VERSION=$(cat package.json | jq .version | tr -d '"')" >> $GITHUB_ENV
@@ -41,6 +46,7 @@ runs:
     - name: Bump Version and Create Release
       env:
         GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      working-directory: ${{ inputs.WORKING_DIR }}
       run: |
         git checkout -b $RELEASE_VERSION
         git push --set-upstream origin $RELEASE_VERSION
@@ -53,11 +59,13 @@ runs:
         ref: main
 
     - name: Install Dependencies
+      working-directory: ${{ inputs.WORKING_DIR }}
       run: npm ci
       shell: bash
 
     - name: Build Package
       if: ${{ inputs.SKIP_BUILD == 'false' }}
+      working-directory: ${{ inputs.WORKING_DIR }}
       run: npm run build
       shell: bash
 
@@ -68,6 +76,7 @@ runs:
         token: ${{ inputs.NPM_TOKEN }}
         strategy: upgrade
         access: public
+        package: ${{ inputs.WORKING_DIR }}/package.json
 
     - name: Create Release
       if: ${{ steps.publish.outputs.type }}
